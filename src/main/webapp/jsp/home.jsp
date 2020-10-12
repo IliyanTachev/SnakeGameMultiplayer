@@ -44,11 +44,18 @@
     }
 
     websocket.onmessage = function (message){
-         console.log(JSON.parse(message.data));
-
-        let jsonObj = JSON.parse(message.data); // to update (using reviver())
-        context.fillRect(jsonObj.random_spot.random_x, jsonObj.random_spot.random_y,unit_size, unit_size);
-        // console.log("Message received: " + message.data);
+        let jsonData = JSON.parse(message.data); // to update (using reviver())
+        if(jsonData.random_spot != undefined) {
+            context.fillRect((jsonData.random_spot.x)*unit_size, (jsonData.random_spot.y)*unit_size,unit_size, unit_size);
+            console.log(jsonData.random_spot.x)
+            console.log(jsonData.random_spot.y)
+        }
+        else if(jsonData.renderSnake != undefined){
+            let snake = jsonData.renderSnake;
+            for(const element of snake){
+                context.fillRect((element.point.x)*unit_size, (element.point.y)*unit_size, unit_size, unit_size);
+            }
+        }
     }
 
     websocket.onerror = function (event){
@@ -58,4 +65,15 @@
     websocket.onclose = function (){
         console.log("[Client] Connection is closed.")
     }
+
+    document.addEventListener('keyup', function (e){
+        if(e.key == "ArrowUp" || e.key == "ArrowDown" || e.key == "ArrowRight" || e.key == "ArrowLeft") {
+            websocket.send(JSON.stringify({
+                cmd: "snakeMove",
+                params: {
+                    direction: e.key.replace("Arrow", "move")
+                }
+            }));
+        }
+    });
 </script>

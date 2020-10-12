@@ -1,27 +1,39 @@
 package classes;
 
-public class Point {
-    private double x;
-    private double y;
+import org.json.simple.JSONObject;
 
-    public Point(double x, double y) {
+public class Point {
+    private int x;
+    private int y;
+
+    public Point(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
-    public double getX() {
+    public Point() {
+    }
+
+    public int getX() {
         return x;
     }
 
-    public void setX(double x) {
+    public void setX(int x) {
         this.x = x;
     }
 
-    public double getY() {
+    public int getY() {
         return y;
     }
 
-    public void setY(double y) {
+    public void setY(int y) {
         this.y = y;
+    }
+
+    public JSONObject toJSONObject(){
+        JSONObject json = new JSONObject();
+        json.put("x", getX());
+        json.put("y", getY());
+        return json;
     }
 }
