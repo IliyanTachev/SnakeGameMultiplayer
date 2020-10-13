@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class ApplicationRunner {
     private Snake snake = new Snake();
@@ -21,6 +22,7 @@ public class ApplicationRunner {
             randomGeneratedSpots.add(new Point().getRandomPoint(gridWidth, gridHeight));
         }
 
+        snake.setFoodPointsOnMap(randomGeneratedSpots.stream().skip(1).collect(Collectors.toList()));
         Iterator<Point> it = randomGeneratedSpots.iterator();
         this.snake.head = it.next();
 

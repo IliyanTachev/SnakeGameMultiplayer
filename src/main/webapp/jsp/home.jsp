@@ -25,11 +25,16 @@
     let x_pos = 0, y_pos = 0;
     let grid_width = 60, grid_height = 40, unit_size = 15;
     let last_position_move = null;
+    let settings = {
+        map_color: "#323232",
+        snake_color: "#ffffff",
+        food_color: "#ff0000"
+    }
 
     for(let i=0;i<grid_height;i++, y_pos+=unit_size,x_pos=0){
         for(let k=0;k<grid_width;k++, x_pos+=unit_size){
             context.beginPath();
-            context.fillStyle = "#323232";
+            context.fillStyle = settings.map_color;
             context.fillRect(x_pos,y_pos,unit_size,unit_size)
         }
     }
@@ -47,20 +52,17 @@
 
     websocket.onmessage = function (message){
         let jsonData = JSON.parse(message.data); // to update (using reviver())
-        console.log(jsonData);
         if(jsonData.random_spots != undefined) {
             let snakeHead = jsonData.random_spots.snakeHead;
-            context.fillStyle = "#ffffff";
+            context.fillStyle = settings.snake_color;
             context.fillRect((snakeHead.x)*unit_size, (snakeHead.y)*unit_size,unit_size, unit_size);
             for(let foodPoint of jsonData.random_spots.food){
-                context.fillStyle = "#ff0000";
+                context.fillStyle = settings.food_color;
                 context.fillRect((foodPoint.x)*unit_size, (foodPoint.y)*unit_size,unit_size, unit_size);
             }
         }
         else if(jsonData.renderSnake != undefined){
             let snake = jsonData.renderSnake;
-            //let tail = snake[snake.length-1];
-            //for(const element of snake){
             if(last_position_move != null) {
                 context.fillStyle = "#323232";
                 context.fillRect((last_position_move.point.x)*unit_size, (last_position_move.point.y)*unit_size, unit_size, unit_size);
@@ -68,7 +70,6 @@
             context.fillStyle = "#ffffff";
             context.fillRect((snake[0].point.x)*unit_size, (snake[0].point.y)*unit_size, unit_size, unit_size);
             last_position_move = snake[0];
-            //}
         }
     }
 
