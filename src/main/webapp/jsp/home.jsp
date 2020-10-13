@@ -24,11 +24,13 @@
     let context = canvas.getContext("2d");
     let x_pos = 0, y_pos = 0;
     let grid_width = 60, grid_height = 40, unit_size = 15;
+    let last_position_move = null;
 
     for(let i=0;i<grid_height;i++, y_pos+=unit_size,x_pos=0){
         for(let k=0;k<grid_width;k++, x_pos+=unit_size){
             context.beginPath();
-            context.strokeRect(x_pos,y_pos,unit_size,unit_size)
+            context.fillStyle = "#323232";
+            context.fillRect(x_pos,y_pos,unit_size,unit_size)
         }
     }
     let websocket = new WebSocket("ws:localhost:8080/home");
@@ -45,16 +47,28 @@
 
     websocket.onmessage = function (message){
         let jsonData = JSON.parse(message.data); // to update (using reviver())
-        if(jsonData.random_spot != undefined) {
-            context.fillRect((jsonData.random_spot.x)*unit_size, (jsonData.random_spot.y)*unit_size,unit_size, unit_size);
-            console.log(jsonData.random_spot.x)
-            console.log(jsonData.random_spot.y)
+        console.log(jsonData);
+        if(jsonData.random_spots != undefined) {
+            let snakeHead = jsonData.random_spots.snakeHead;
+            context.fillStyle = "#ffffff";
+            context.fillRect((snakeHead.x)*unit_size, (snakeHead.y)*unit_size,unit_size, unit_size);
+            for(let foodPoint of jsonData.random_spots.food){
+                context.fillStyle = "#ff0000";
+                context.fillRect((foodPoint.x)*unit_size, (foodPoint.y)*unit_size,unit_size, unit_size);
+            }
         }
         else if(jsonData.renderSnake != undefined){
             let snake = jsonData.renderSnake;
-            for(const element of snake){
-                context.fillRect((element.point.x)*unit_size, (element.point.y)*unit_size, unit_size, unit_size);
+            //let tail = snake[snake.length-1];
+            //for(const element of snake){
+            if(last_position_move != null) {
+                context.fillStyle = "#323232";
+                context.fillRect((last_position_move.point.x)*unit_size, (last_position_move.point.y)*unit_size, unit_size, unit_size);
             }
+            context.fillStyle = "#ffffff";
+            context.fillRect((snake[0].point.x)*unit_size, (snake[0].point.y)*unit_size, unit_size, unit_size);
+            last_position_move = snake[0];
+            //}
         }
     }
 
@@ -66,14 +80,26 @@
         console.log("[Client] Connection is closed.")
     }
 
+    var changePositionCounter = 0;
+    var lastTimeoutId = null;
     document.addEventListener('keyup', function (e){
         if(e.key == "ArrowUp" || e.key == "ArrowDown" || e.key == "ArrowRight" || e.key == "ArrowLeft") {
-            websocket.send(JSON.stringify({
-                cmd: "snakeMove",
-                params: {
-                    direction: e.key.replace("Arrow", "move")
-                }
-            }));
+            if(changePositionCounter> 0) clearTimeout(lastTimeoutId);
+            var framesPerSecond = 10;
+            let requestAnimation = () => {
+                lastTimeoutId = setTimeout(function() {
+                    websocket.send(JSON.stringify({
+                        cmd: "snakeMove",
+                        params: {
+                            direction: e.key.replace("Arrow", "move")
+                        }
+                    }));
+                    requestAnimationFrame(requestAnimation);
+                }, 1000 / framesPerSecond);
+            };
+
+            requestAnimation();
+            changePositionCounter++;
         }
     });
 </script>

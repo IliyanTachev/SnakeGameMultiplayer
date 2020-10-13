@@ -36,4 +36,10 @@ public class Point {
         json.put("y", getY());
         return json;
     }
+
+    public Point getRandomPoint(int maxX, int maxY){
+        int randomX = (int) Math.floor(Math.random() * maxX);
+        int randomY = (int) Math.floor(Math.random() * maxY);
+        return new Point(randomX, randomY);
+    }
 }

@@ -7,9 +7,7 @@ import javax.enterprise.inject.Default;
 import javax.inject.Inject;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ApplicationRunner {
     private Snake snake = new Snake();
@@ -17,14 +15,35 @@ public class ApplicationRunner {
     private JSONObject initGrid(JSONObject json){
         int gridWidth = Integer.parseInt(json.get("grid_width").toString());
         int gridHeight = Integer.parseInt(json.get("grid_height").toString());
-        int randomX = (int) Math.floor(Math.random() * gridWidth), randomY = (int) Math.floor(Math.random() * gridHeight);
-        this.snake.head.setX(randomX);
-        this.snake.head.setY(randomY);
-        JSONObject randomSpotGenerator = new JSONObject();
-        randomSpotGenerator.put("x", randomX);
-        randomSpotGenerator.put("y", randomY);
+        int foodSize = 15;
+        Set<Point> randomGeneratedSpots = new HashSet<>();
+        for(int i=0;i<16;i++){
+            randomGeneratedSpots.add(new Point().getRandomPoint(gridWidth, gridHeight));
+        }
+
+        Iterator<Point> it = randomGeneratedSpots.iterator();
+        this.snake.head = it.next();
+
+        JSONObject snakeHeadObject = new JSONObject();
+        snakeHeadObject.put("x", this.snake.head.getX());
+        snakeHeadObject.put("y", this.snake.head.getY());
+
+        JSONArray foodPoints = new JSONArray();
+
+        while(it.hasNext()){
+            Point point = it.next();
+            JSONObject pointObject = new JSONObject();
+            pointObject.put("x", point.getX());
+            pointObject.put("y", point.getY());
+            foodPoints.add(pointObject);
+        }
+
+        JSONObject randomDataObject = new JSONObject();
+        randomDataObject.put("snakeHead", snakeHeadObject);
+        randomDataObject.put("food", foodPoints);
+
         JSONObject jsonData = new JSONObject();
-        jsonData.put("random_spot", randomSpotGenerator);
+        jsonData.put("random_spots", randomDataObject);
         System.out.println("<----- HEAD ------>");
         System.out.println(this.snake.getHead().getX());
         System.out.println(this.snake.getHead().getY());
