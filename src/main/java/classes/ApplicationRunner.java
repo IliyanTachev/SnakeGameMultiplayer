@@ -11,24 +11,24 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ApplicationRunner {
-    private Snake snake = new Snake();
+    private final Snake snake = new Snake();
 
     private JSONObject initGrid(JSONObject json){
         int gridWidth = Integer.parseInt(json.get("grid_width").toString());
         int gridHeight = Integer.parseInt(json.get("grid_height").toString());
-        int foodSize = 15;
+        int foodSize = 2;
         Set<Point> randomGeneratedSpots = new HashSet<>();
-        for(int i=0;i<16;i++){
+        for(int i=0;i<foodSize+1;i++){
             randomGeneratedSpots.add(new Point().getRandomPoint(gridWidth, gridHeight));
         }
 
         snake.setFoodPointsOnMap(randomGeneratedSpots.stream().skip(1).collect(Collectors.toList()));
         Iterator<Point> it = randomGeneratedSpots.iterator();
-        this.snake.head = it.next();
+        Point snakeHead = it.next();
 
         JSONObject snakeHeadObject = new JSONObject();
-        snakeHeadObject.put("x", this.snake.head.getX());
-        snakeHeadObject.put("y", this.snake.head.getY());
+        snakeHeadObject.put("x", snakeHead.getX());
+        snakeHeadObject.put("y", snakeHead.getY());
 
         JSONArray foodPoints = new JSONArray();
 
@@ -90,6 +90,6 @@ public class ApplicationRunner {
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         }
-        return null;
+        return "{error_on_server:true}";
     }
 }

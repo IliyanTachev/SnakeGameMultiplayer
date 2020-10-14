@@ -6,9 +6,8 @@ import java.util.List;
 import java.util.Set;
 
 public class Snake {
-    Point head = new Point();
-    List<Point> body = new ArrayList<>();
-    List<Point> foodPointsOnMap = new ArrayList<>();
+    private List<Point> body = new ArrayList<>();
+    private List<Point> foodPointsOnMap = new ArrayList<>();
 
     public List<Point> getFoodPointsOnMap() {
         return foodPointsOnMap;
@@ -23,31 +22,43 @@ public class Snake {
     }
 
     public List<Point> moveRight(){
-        head.setX(head.getX()+1);
-        Point checkPoint = new Point(head.getX(), head.getY());
-        for(Point p : foodPointsOnMap){
-           // if(p == checkPoint) this.addPointToBody(); check for collision
-        }
-        return getSnake();
+        getHead().setX(getHead().getX()+1);
+        Point checkPoint = new Point(getHead().getX(), getHead().getY());
+        return getSnake(false);
     }
     public List<Point> moveLeft(){
-        head.setX(head.getX()-1);
-        return getSnake();
+        getHead().setX(getHead().getX()-1);
+        return getSnake(false);
     }
     public List<Point> moveUp(){
-        head.setY(head.getY()-1);
-        return getSnake();
+        getHead().setY(getHead().getY()-1);
+        return getSnake(false);
     }
     public List<Point> moveDown(){
-        head.setY(head.getY()+1);
-        return getSnake();
+        Point collisionPosition = new Point(getHead().getX(), getHead().getY()+1);
+        if(foodPointsOnMap.contains(collisionPosition)){
+            this.body.add(0, collisionPosition);
+            return getSnake(true);
+        }
+
+        getHead().setY(getHead().getY()+1);
+        for (int i = 1; i < body.size(); i++) {
+            Point currentBodyPoint = this.body.get(i);
+            currentBodyPoint = this.body.get(i + 1);
+        }
+        this.body.remove(this.body.size() - 1);
+        return getSnake(false);
     }
-    public List<Point> getSnake(){
-        this.body.add(0, this.head);
+    public List<Point> getSnake(boolean flag){
+       if(flag) {
+           for(Point p : this.body){
+               System.out.println(p.toString());
+           }
+       }
         return this.body;
     }
 
     public Point getHead(){
-        return this.head;
+        return this.body.size() != 0 ? this.body.get(0) : null;
     }
 }
