@@ -25,6 +25,8 @@ public class ApplicationRunner {
         snake.setFoodPointsOnMap(randomGeneratedSpots.stream().skip(1).collect(Collectors.toList()));
         Iterator<Point> it = randomGeneratedSpots.iterator();
         Point snakeHead = it.next();
+        this.snake.setHead(snakeHead);
+        System.out.println("HEAD ====> x = " + snakeHead.getX() + "    y = " + snakeHead.getY());
 
         JSONObject snakeHeadObject = new JSONObject();
         snakeHeadObject.put("x", snakeHead.getX());
@@ -32,12 +34,15 @@ public class ApplicationRunner {
 
         JSONArray foodPoints = new JSONArray();
 
+        int i=1;
         while(it.hasNext()){
             Point point = it.next();
             JSONObject pointObject = new JSONObject();
             pointObject.put("x", point.getX());
             pointObject.put("y", point.getY());
+            System.out.println("FOOD("+ i +") ====> x =  " + point.getX() + "    y = " + point.getY());
             foodPoints.add(pointObject);
+            i++;
         }
 
         JSONObject randomDataObject = new JSONObject();
@@ -46,9 +51,7 @@ public class ApplicationRunner {
 
         JSONObject jsonData = new JSONObject();
         jsonData.put("random_spots", randomDataObject);
-        System.out.println("<----- HEAD ------>");
-        System.out.println(this.snake.getHead().getX());
-        System.out.println(this.snake.getHead().getY());
+
         return jsonData;
     }
 

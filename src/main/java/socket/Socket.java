@@ -30,7 +30,9 @@ public class Socket {
                JSONObject jsonData = (JSONObject) jsonParser.parse(messageReceived);
                if(jsonData.get("cmd") != null){
                    try {
-                       session.getBasicRemote().sendText(applicationRunner.parseMethod(jsonData.get("cmd").toString(), (JSONObject) jsonData.get("params")));
+                       String result = applicationRunner.parseMethod(jsonData.get("cmd").toString(), (JSONObject) jsonData.get("params"));
+                       System.out.println("Result = " + result);
+                       session.getBasicRemote().sendText(result);
                    } catch (IOException e) {
                        e.printStackTrace();
                    }

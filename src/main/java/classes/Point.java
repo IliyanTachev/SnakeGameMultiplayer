@@ -16,6 +16,12 @@ public class Point {
     public Point() {
     }
 
+    //Copy costructor
+    public Point(Point p){
+        setX(p.getX());
+        setY(p.getY());
+    }
+
     public int getX() {
         return x;
     }

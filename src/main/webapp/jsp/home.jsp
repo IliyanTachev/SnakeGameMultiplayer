@@ -52,7 +52,7 @@
 
     websocket.onmessage = function (message){
         let jsonData = JSON.parse(message.data); // to update (using reviver())
-        if(jsonData.get("random_spots") !== undefined) {
+        if(jsonData.random_spots !== undefined) {
             let snakeHead = jsonData.random_spots.snakeHead;
             context.fillStyle = settings.snake_color;
             context.fillRect((snakeHead.x)*unit_size, (snakeHead.y)*unit_size,unit_size, unit_size);
@@ -61,8 +61,8 @@
                 context.fillRect((foodPoint.x)*unit_size, (foodPoint.y)*unit_size,unit_size, unit_size);
             }
         }
-        else if(jsonData.get("renderSnake") !== undefined){
-            let snake = jsonData.get("renderSnake");
+        else if(jsonData.renderSnake !== undefined){
+            let snake = jsonData.renderSnake;
             if(last_position_move != null) {
                 context.fillStyle = "#323232";
                 context.fillRect((last_position_move.point.x)*unit_size, (last_position_move.point.y)*unit_size, unit_size, unit_size);
@@ -75,7 +75,7 @@
             // context.fillStyle = "#ffffff";
             // context.fillRect((snake[0].point.x)*unit_size, (snake[0].point.y)*unit_size, unit_size, unit_size);
             //last_position_move = snake[0];
-        } else if(jsonData.get("error_on_server")){
+        } else if(jsonData.error_on_server){
             alert("There is an ERROR on server.");
         }
     }
