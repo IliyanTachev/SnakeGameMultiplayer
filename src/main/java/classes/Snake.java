@@ -1,7 +1,9 @@
 package classes;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 
 public class Snake {
     private List<Point> body = new ArrayList<>();
@@ -26,17 +28,18 @@ public class Snake {
             return getSnake(true);
         }
 
-        if(this.body.size() > 1) {
-//            getHead().setX(getHead().getX()+1);
+        if(this.body.size() == 2) {
             nextMove(new Point(getHead().getX()+1, getHead().getY()));
-        } else {
+        } else if(this.body.size() > 2){
+            nextMove(new Point(getHead().getX()+1, getHead().getY())); // pass new position for head
+        }
+        else {
             getHead().setX(getHead().getX()+1);
         }
 
         return getSnake(false);
     }
     public List<Point> moveLeft(){
-        System.out.println("head => (" + getHead().getX() + ", " + getHead().getY() + ")");
         Point collisionPosition = new Point(getHead().getX()-1, getHead().getY());
         if(foodPointsOnMap.contains(collisionPosition)){
             System.out.println("head => (" + getHead().getX() + ", " + getHead().getY() + ")");
@@ -44,10 +47,12 @@ public class Snake {
             return getSnake(true);
         }
 
-        if(this.body.size() > 1) {
-//            getHead().setX(getHead().getX()-1);
+        if(this.body.size() == 2) {
             nextMove(new Point(getHead().getX()-1, getHead().getY()));
-        } else {
+        } else if(this.body.size() > 2){
+            nextMove(new Point(getHead().getX()-1, getHead().getY())); // pass new position for head
+        }
+        else {
             getHead().setX(getHead().getX()-1);
         }
 
@@ -60,10 +65,12 @@ public class Snake {
             return getSnake(true);
         }
 
-        if(this.body.size() > 1) {
-//            getHead().setY(getHead().getY()-1);
+        if(this.body.size() == 2) {
             nextMove(new Point(getHead().getX(), getHead().getY()-1));
-        } else {
+        } else if(this.body.size() > 2){
+            nextMove(new Point(getHead().getX(), getHead().getY()-1)); // pass new position for head
+        }
+        else {
             getHead().setY(getHead().getY()-1);
         }
 
@@ -76,9 +83,12 @@ public class Snake {
             return getSnake(true);
         }
 
-        if(this.body.size() > 1) {
+        if(this.body.size() == 2) { // > 1
             nextMove(new Point(getHead().getX(), getHead().getY()+1)); // pass new position for head
-        } else {
+        } else if(this.body.size() > 2){
+            nextMove(new Point(getHead().getX(), getHead().getY()+1)); // pass new position for head
+        }
+        else {
             getHead().setY(getHead().getY()+1);
         }
 
@@ -86,14 +96,30 @@ public class Snake {
     }
 
     public void nextMove(Point headDirection){
-        this.body.add(0, headDirection);
-        for(int i=1;i<this.body.size()-1;i++){
-            Point currentPoint = this.body.get(i);
-            Point nextPoint = this.body.get(i+1);
-            currentPoint.setX(nextPoint.getX());
-            currentPoint.setY(nextPoint.getY());
+//        this.body.add(0, headDirection);
+//        for(int i=1;i<this.body.size()-1;i++){
+//            Point currentPoint = this.body.get(i);
+//            Point nextPoint = this.body.get(i+1);
+//            nextPoint.setX(currentPoint.getX());
+//            nextPoint.setY(currentPoint.getY());
+//        }
+//        this.body.remove(this.body.size()-1);
+        //this.body.get(0).setX(headDirection.getX());
+        //this.body.get(0).setY(headDirection.getY());
+
+        Queue<Integer> queue = new ArrayDeque<>();
+        queue.add(getHead().getX()); // lastX
+        queue.add(getHead().getY()); // lastY
+
+        getHead().setX(headDirection.getX());
+        getHead().setY(headDirection.getY());
+
+        for(int i=1;i<this.body.size();i++){
+            queue.add(this.body.get(i).getX()); // lastX
+            queue.add(this.body.get(i).getY()); // lastY
+            this.body.get(i).setX(queue.poll());
+            this.body.get(i).setY(queue.poll());
         }
-        this.body.remove(this.body.size()-1);
     }
 
     public List<Point> getSnake(boolean flag){

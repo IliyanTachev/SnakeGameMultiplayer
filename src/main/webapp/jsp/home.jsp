@@ -28,14 +28,17 @@
     let settings = {
         map_color: "#323232",
         snake_color: "#ffffff",
-        food_color: "#ff0000"
+        food_color: "#ff0000",
+        map_border_color: "#ffffff"
     }
 
     for(let i=0;i<grid_height;i++, y_pos+=unit_size,x_pos=0){
         for(let k=0;k<grid_width;k++, x_pos+=unit_size){
             context.beginPath();
-            context.fillStyle = settings.map_color;
-            context.fillRect(x_pos,y_pos,unit_size,unit_size)
+            context.fillStyle = settings.map_color; // fillStyle
+            context.fillRect(x_pos,y_pos,unit_size,unit_size); // fillRect
+            context.strokeStyle = settings.map_border_color;
+            context.strokeRect(x_pos,y_pos,unit_size+1,unit_size+1); // border
         }
     }
     let websocket = new WebSocket("ws:localhost:8080/home");
@@ -50,24 +53,46 @@
         }));
     }
 
+    let snakeHead = null;
     websocket.onmessage = function (message){
         let jsonData = JSON.parse(message.data); // to update (using reviver())
         if(jsonData.random_spots !== undefined) {
-            let snakeHead = jsonData.random_spots.snakeHead;
+            snakeHead = jsonData.random_spots.snakeHead;
+
+            context.beginPath();
             context.fillStyle = settings.snake_color;
-            context.fillRect((snakeHead.x)*unit_size, (snakeHead.y)*unit_size,unit_size, unit_size);
+            context.fillRect((snakeHead.x)*unit_size, (snakeHead.y)*unit_size,unit_size, unit_size); // snake inner color
+            context.strokeStyle = settings.map_color;
+            context.strokeRect((snakeHead.x)*unit_size, (snakeHead.y)*unit_size,unit_size+1, unit_size+1); // snake border color
+
             for(let foodPoint of jsonData.random_spots.food){
+                context.beginPath();
                 context.fillStyle = settings.food_color;
                 context.fillRect((foodPoint.x)*unit_size, (foodPoint.y)*unit_size,unit_size, unit_size);
             }
         }
         else if(jsonData.renderSnake !== undefined){
+            // Delete initial random spot
+            context.beginPath();
+            context.fillStyle = settings.map_color; // fillStyle
+            context.fillRect((snakeHead.x)*unit_size, (snakeHead.y)*unit_size,unit_size, unit_size);
+            context.strokeStyle = settings.map_border_color;
+            context.strokeRect((snakeHead.x)*unit_size, (snakeHead.y)*unit_size,unit_size+1, unit_size+1);
+            // Delete initial random spot
+
             let snake = jsonData.renderSnake;
             if(last_position_move != null) {
-                context.fillStyle = "#323232";
+                // context.fillStyle = "#323232";
+                // context.fillRect((last_position_move.point.x)*unit_size, (last_position_move.point.y)*unit_size, unit_size, unit_size);
+
+                context.beginPath();
+                context.fillStyle = settings.map_color; // fillStyle
                 context.fillRect((last_position_move.point.x)*unit_size, (last_position_move.point.y)*unit_size, unit_size, unit_size);
+                context.strokeStyle = settings.map_border_color;
+                context.strokeRect((last_position_move.point.x)*unit_size, (last_position_move.point.y)*unit_size, unit_size+1, unit_size+1);
             }
             for(let snakePoint of snake){
+                context.beginPath();
                 context.fillStyle = "#ffffff";
                 context.fillRect((snakePoint.point.x)*unit_size, (snakePoint.point.y)*unit_size, unit_size, unit_size);
                 last_position_move = snakePoint;

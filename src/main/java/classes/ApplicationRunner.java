@@ -16,7 +16,7 @@ public class ApplicationRunner {
     private JSONObject initGrid(JSONObject json){
         int gridWidth = Integer.parseInt(json.get("grid_width").toString());
         int gridHeight = Integer.parseInt(json.get("grid_height").toString());
-        int foodSize = 2;
+        int foodSize = 10;
         Set<Point> randomGeneratedSpots = new HashSet<>();
         for(int i=0;i<foodSize+1;i++){
             randomGeneratedSpots.add(new Point().getRandomPoint(gridWidth, gridHeight));
