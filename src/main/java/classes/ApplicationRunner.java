@@ -11,7 +11,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ApplicationRunner {
-    private final Snake snake = new Snake();
+    private Snake snake = new Snake();
 
     private JSONObject initGrid(JSONObject json){
         int gridWidth = Integer.parseInt(json.get("grid_width").toString());
@@ -26,7 +26,6 @@ public class ApplicationRunner {
         Iterator<Point> it = randomGeneratedSpots.iterator();
         Point snakeHead = it.next();
         this.snake.setHead(snakeHead);
-        System.out.println("HEAD ====> x = " + snakeHead.getX() + "    y = " + snakeHead.getY());
 
         JSONObject snakeHeadObject = new JSONObject();
         snakeHeadObject.put("x", snakeHead.getX());
@@ -59,6 +58,13 @@ public class ApplicationRunner {
         String direction = json.get("direction").toString();
         try {
             List<Point> snake = (List<Point>) Snake.class.getMethod(direction).invoke(this.snake);
+
+            if(snake == null) { // game over condition
+                JSONObject jsonResponse = new JSONObject();
+                jsonResponse.put("gameover", true);
+                return jsonResponse;
+            }
+
             JSONArray renderSnake = new JSONArray();
             for(Point point : snake){
                 JSONObject pointData = new JSONObject();
@@ -78,6 +84,11 @@ public class ApplicationRunner {
         return null;
     }
 
+    public JSONObject resetSnake(JSONObject empty){
+        snake = new Snake();
+        return empty;
+    }
+
     public String parseMethod(String methodName, JSONObject jsonObject) {
         Method method = null;
         try {
@@ -87,7 +98,8 @@ public class ApplicationRunner {
         }
         try {
             assert method != null;
-            return method.invoke(this, jsonObject).toString();
+            Object result = method.invoke(this, jsonObject);
+            return result == null ? "" : result.toString(); // returns empty String
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (InvocationTargetException e) {

@@ -23,16 +23,15 @@ public class Snake {
 
     public List<Point> moveRight(){
         Point collisionPosition = new Point(getHead().getX()+1, getHead().getY());
-        if(foodPointsOnMap.contains(collisionPosition)){
+        if(this.body.contains(collisionPosition)) {
+            return null; // game over
+        } else if(foodPointsOnMap.contains(collisionPosition)){
             this.body.add(0, collisionPosition);
             return getSnake(true);
         }
 
-        if(this.body.size() == 2) {
+        if(this.body.size() > 1)
             nextMove(new Point(getHead().getX()+1, getHead().getY()));
-        } else if(this.body.size() > 2){
-            nextMove(new Point(getHead().getX()+1, getHead().getY())); // pass new position for head
-        }
         else {
             getHead().setX(getHead().getX()+1);
         }
@@ -41,17 +40,15 @@ public class Snake {
     }
     public List<Point> moveLeft(){
         Point collisionPosition = new Point(getHead().getX()-1, getHead().getY());
-        if(foodPointsOnMap.contains(collisionPosition)){
-            System.out.println("head => (" + getHead().getX() + ", " + getHead().getY() + ")");
+        if(this.body.contains(collisionPosition)) {
+            return null; // game over
+        } else if(foodPointsOnMap.contains(collisionPosition)){
             this.body.add(0, collisionPosition);
             return getSnake(true);
         }
 
-        if(this.body.size() == 2) {
+        if(this.body.size() > 1)
             nextMove(new Point(getHead().getX()-1, getHead().getY()));
-        } else if(this.body.size() > 2){
-            nextMove(new Point(getHead().getX()-1, getHead().getY())); // pass new position for head
-        }
         else {
             getHead().setX(getHead().getX()-1);
         }
@@ -60,15 +57,15 @@ public class Snake {
     }
     public List<Point> moveUp(){
         Point collisionPosition = new Point(getHead().getX(), getHead().getY()-1);
-        if(foodPointsOnMap.contains(collisionPosition)){
+        if(this.body.contains(collisionPosition)) {
+            return null; // game over
+        } else if(foodPointsOnMap.contains(collisionPosition)){
             this.body.add(0, collisionPosition);
             return getSnake(true);
         }
 
-        if(this.body.size() == 2) {
+        if(this.body.size() > 1) {
             nextMove(new Point(getHead().getX(), getHead().getY()-1));
-        } else if(this.body.size() > 2){
-            nextMove(new Point(getHead().getX(), getHead().getY()-1)); // pass new position for head
         }
         else {
             getHead().setY(getHead().getY()-1);
@@ -78,14 +75,14 @@ public class Snake {
     }
     public List<Point> moveDown(){
         Point collisionPosition = new Point(getHead().getX(), getHead().getY()+1);
-        if(foodPointsOnMap.contains(collisionPosition)){
+        if(this.body.contains(collisionPosition)) {
+            return null; // game over
+        } else if(foodPointsOnMap.contains(collisionPosition)){
             this.body.add(0, collisionPosition);
             return getSnake(true);
         }
 
-        if(this.body.size() == 2) { // > 1
-            nextMove(new Point(getHead().getX(), getHead().getY()+1)); // pass new position for head
-        } else if(this.body.size() > 2){
+        if(this.body.size() > 1) {
             nextMove(new Point(getHead().getX(), getHead().getY()+1)); // pass new position for head
         }
         else {
@@ -96,17 +93,6 @@ public class Snake {
     }
 
     public void nextMove(Point headDirection){
-//        this.body.add(0, headDirection);
-//        for(int i=1;i<this.body.size()-1;i++){
-//            Point currentPoint = this.body.get(i);
-//            Point nextPoint = this.body.get(i+1);
-//            nextPoint.setX(currentPoint.getX());
-//            nextPoint.setY(currentPoint.getY());
-//        }
-//        this.body.remove(this.body.size()-1);
-        //this.body.get(0).setX(headDirection.getX());
-        //this.body.get(0).setY(headDirection.getY());
-
         Queue<Integer> queue = new ArrayDeque<>();
         queue.add(getHead().getX()); // lastX
         queue.add(getHead().getY()); // lastY
