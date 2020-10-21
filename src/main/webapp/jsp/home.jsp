@@ -78,15 +78,6 @@
         console.log("websocket = " + websocket);
         if(cmd != "restart") websocket = new WebSocket("ws:localhost:8080/home"); // restart game after clicked on try again button
 
-        if(cmd == "restart"){
-            // reset stuff
-            document.querySelector(".eaten-food > .score").innerHTML="0";
-            document.querySelector(".modal").remove();
-
-            websocket.send(JSON.stringify({
-                cmd: "resetSnake"
-            }));
-        }
         let canvas = document.querySelector("canvas");
         let context = canvas.getContext("2d");
         let x_pos = 0, y_pos = 0;
@@ -107,6 +98,25 @@
                 context.strokeStyle = settings.map_border_color;
                 context.strokeRect(x_pos, y_pos, unit_size + 1, unit_size + 1); // border
             }
+        }
+
+        if(cmd == "restart"){
+            console.log("Game was restarted...");
+            // reset stuff
+            document.querySelector(".eaten-food > .score").innerHTML="0";
+            document.querySelector(".modal").remove();
+
+            websocket.send(JSON.stringify({
+                cmd: "resetSnake"
+            }));
+
+            websocket.send(JSON.stringify({
+                cmd: "initGrid",
+                params: {
+                    grid_width,
+                    grid_height
+                }
+            }));
         }
 
         websocket.onopen = function () {
@@ -158,6 +168,7 @@
                 eaten_food_score.innerHTML = snake.length - 1;
 
                 if (snake.length-1 == random_spots_food.length) {
+                    console.log("YOU WON");
                     displayModal("win", random_spots_food.length);
                 }
 
