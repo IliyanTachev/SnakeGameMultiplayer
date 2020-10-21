@@ -10,10 +10,10 @@ import org.json.simple.parser.*;
 
 @ServerEndpoint("/home")
 public class Socket {
-    private ApplicationRunner applicationRunner = new ApplicationRunner();
+    private final ApplicationRunner applicationRunner = new ApplicationRunner();
 
     @OnOpen
-    public String handOpen(Session session){
+    public String handOpen(){
         return "[Server] Connection established.";
     }
 

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Queue;
 
 public class Snake {
-    private List<Point> body = new ArrayList<>();
+    private final List<Point> body = new ArrayList<>();
     private List<Point> foodPointsOnMap = new ArrayList<>();
 
     public List<Point> getFoodPointsOnMap() {
@@ -27,7 +27,7 @@ public class Snake {
             return null; // game over
         } else if(foodPointsOnMap.contains(collisionPosition)){
             this.body.add(0, collisionPosition);
-            return getSnake(true);
+            return getSnake();
         }
 
         if(this.body.size() > 1)
@@ -36,7 +36,7 @@ public class Snake {
             getHead().setX(getHead().getX()+1);
         }
 
-        return getSnake(false);
+        return getSnake();
     }
     public List<Point> moveLeft(){
         Point collisionPosition = new Point(getHead().getX()-1, getHead().getY());
@@ -44,7 +44,7 @@ public class Snake {
             return null; // game over
         } else if(foodPointsOnMap.contains(collisionPosition)){
             this.body.add(0, collisionPosition);
-            return getSnake(true);
+            return getSnake();
         }
 
         if(this.body.size() > 1)
@@ -53,7 +53,7 @@ public class Snake {
             getHead().setX(getHead().getX()-1);
         }
 
-        return getSnake(false);
+        return getSnake();
     }
     public List<Point> moveUp(){
         Point collisionPosition = new Point(getHead().getX(), getHead().getY()-1);
@@ -61,7 +61,7 @@ public class Snake {
             return null; // game over
         } else if(foodPointsOnMap.contains(collisionPosition)){
             this.body.add(0, collisionPosition);
-            return getSnake(true);
+            return getSnake();
         }
 
         if(this.body.size() > 1) {
@@ -71,7 +71,7 @@ public class Snake {
             getHead().setY(getHead().getY()-1);
         }
 
-        return getSnake(false);
+        return getSnake();
     }
     public List<Point> moveDown(){
         Point collisionPosition = new Point(getHead().getX(), getHead().getY()+1);
@@ -79,7 +79,7 @@ public class Snake {
             return null; // game over
         } else if(foodPointsOnMap.contains(collisionPosition)){
             this.body.add(0, collisionPosition);
-            return getSnake(true);
+            return getSnake();
         }
 
         if(this.body.size() > 1) {
@@ -89,7 +89,7 @@ public class Snake {
             getHead().setY(getHead().getY()+1);
         }
 
-        return getSnake(false);
+        return getSnake();
     }
 
     public void nextMove(Point headDirection){
@@ -108,7 +108,7 @@ public class Snake {
         }
     }
 
-    public List<Point> getSnake(boolean flag){
+    public List<Point> getSnake(){
         return this.body;
     }
 

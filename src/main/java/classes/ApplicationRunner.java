@@ -74,11 +74,7 @@ public class ApplicationRunner {
             JSONObject jsonResponse = new JSONObject();
             jsonResponse.put("renderSnake", renderSnake);
             return jsonResponse;
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
+        } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
             e.printStackTrace();
         }
         return null;
@@ -100,9 +96,7 @@ public class ApplicationRunner {
             assert method != null;
             Object result = method.invoke(this, jsonObject);
             return result == null ? "" : result.toString(); // returns empty String
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
+        } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
         return "{error_on_server:true}";

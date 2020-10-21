@@ -40,14 +40,6 @@
             text-align: center;
         }
 
-        .modal.win{
-
-        }
-
-        .modal.lose{
-
-        }
-
         #try-again-btn{
             background-color: #4CAF50;
             border: none;
@@ -56,7 +48,6 @@
             text-align: center;
             text-decoration: none;
             font-size: 16px;
-            margin: 4px 2px;
             cursor: pointer;
             display: block;
             margin: 0 auto;
@@ -76,7 +67,7 @@
     let websocket = null;
     let gameLoader = (cmd) => {
         console.log("websocket = " + websocket);
-        if(cmd != "restart") websocket = new WebSocket("ws:localhost:8080/home"); // restart game after clicked on try again button
+        if(cmd !== "restart") websocket = new WebSocket("ws:localhost:8080/home"); // restart game after clicked on try again button
 
         let canvas = document.querySelector("canvas");
         let context = canvas.getContext("2d");
@@ -100,7 +91,7 @@
             }
         }
 
-        if(cmd == "restart"){
+        if(cmd === "restart"){
             console.log("Game was restarted...");
             // reset stuff
             document.querySelector(".eaten-food > .score").innerHTML="0";
@@ -165,9 +156,9 @@
 
                 snake = jsonData.renderSnake;
                 let eaten_food_score = document.querySelector(".eaten-food > .score");
-                eaten_food_score.innerHTML = snake.length - 1;
+                eaten_food_score.innerHTML = (snake.length - 1).toString();
 
-                if (snake.length-1 == random_spots_food.length) {
+                if (snake.length-1 === random_spots_food.length) {
                     console.log("YOU WON");
                     displayModal("win", random_spots_food.length);
                 }
@@ -189,7 +180,7 @@
                 }
             } else if (jsonData.error_on_server) {
                 alert("There is an ERROR on server.");
-            } else if(jsonData.gameover != undefined){
+            } else if(jsonData.gameover !== undefined){
                 displayModal("lose", snake.length-1); // snake.length-1 = food number
             }
         }
@@ -202,12 +193,12 @@
             console.log("[Client] Connection is closed.")
         }
 
-        var changePositionCounter = 0;
-        var lastTimeoutId = null;
+        let changePositionCounter = 0;
+        let lastTimeoutId = null;
         document.addEventListener('keyup', function (e) {
-            if (e.key == "ArrowUp" || e.key == "ArrowDown" || e.key == "ArrowRight" || e.key == "ArrowLeft") {
+            if (e.key === "ArrowUp" || e.key === "ArrowDown" || e.key === "ArrowRight" || e.key === "ArrowLeft") {
                 if (changePositionCounter > 0) clearTimeout(lastTimeoutId);
-                var framesPerSecond = 10;
+                let framesPerSecond = 10;
                 let requestAnimation = () => {
                     lastTimeoutId = setTimeout(function () {
                         websocket.send(JSON.stringify({
@@ -230,9 +221,9 @@
                 let document_body = document.querySelector("body");
                 let div = document.createElement("div");
                 div.classList.add("modal");
-                if (type == "win") {
+                if (type === "win") {
                     div.classList.add("win");
-                    div.innerHTML = "<p style=\"background-color: #4CAF50\">You won. Congratiolations.</p>" + "<br/>";
+                    div.innerHTML = "<p style=\"background-color: #4CAF50\">You won. Congratulations.</p>" + "<br/>";
                     div.innerHTML += "Your score is " + score;
                 } else {
                     div.classList.add("lose");
